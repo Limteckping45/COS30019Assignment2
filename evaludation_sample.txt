@@ -1,0 +1,39 @@
+model = load_model('bird_classifier.h5')
+
+from sklearn.metrics import accuracy_score
+
+# Make predictions on the test data
+y_pred = model.predict(test_generator)
+
+# Convert one-hot encoded predictions to class labels (e.g., using argmax)
+y_pred_labels = np.argmax(y_pred, axis=1)
+
+# Get the true labels from the test generator
+y_true = test_generator.classes
+
+# Calculate the Top-1 accuracy
+top1_accuracy = accuracy_score(y_true, y_pred_labels)
+
+from sklearn.metrics import confusion_matrix
+
+# Get the confusion matrix
+conf_matrix = confusion_matrix(y_true, y_pred_labels)
+
+# Calculate class-wise accuracy
+class_accuracies = np.diag(conf_matrix) / conf_matrix.sum(axis=1)
+
+# Calculate the average accuracy per class
+avg_accuracy_per_class = np.mean(class_accuracies)
+
+from sklearn.metrics import classification_report, confusion_matrix
+
+# Calculate precision, recall, and F1-score
+report = classification_report(y_true, y_pred_labels, target_names=class_names)
+
+# Print the Top-1 accuracy, Average accuracy per class, and the classification report
+print(f"Top-1 Accuracy: {top1_accuracy * 100 :.2f}%")
+print(f"Average Accuracy per Class: {avg_accuracy_per_class * 100 :.2f}%")
+print("\nClassification Report:")
+print(report)
+print("\nConfusion Matrix:")
+print(conf_matrix)
